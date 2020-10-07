@@ -1,0 +1,11 @@
+---
+# defaults file for rpi-install-container-runtime
+
+# The default runtime engine installed
+runtime: "docker"
+
+# The system must provide the architecture, otherwise it has to be given by the user
+arch: null
+
+# The crio version has to be defined by the user
+crio: null

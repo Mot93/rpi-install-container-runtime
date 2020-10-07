@@ -1,0 +1,55 @@
+# ansible-galaxy collection install community.general
+- name: Add an Apt signing key, docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add the repository needed to install docker into sources list
+  apt_repository:
+    repo: deb [arch={{ arch }}] https://download.docker.com/linux/ubuntu {{ ansible_facts['lsb']['codename'] }} stable
+    state: present
+
+- name: Run the equivalent of "apt-get update" as a separate step
+  apt:
+    update_cache: yes
+
+- name: Install containerd
+  apt:
+    name: containerd.io
+    state: present
+
+- name: Install docker-ce
+  apt:
+    name: docker-ce
+    state: present
+
+- name: Install docker-ce-cli
+  apt:
+    name: docker-ce-cli
+    state: present
+
+- name: Setting docker daemon
+  lineinfile:
+    path: /etc/sysctl.d/99-kubernetes-cri.conf
+    line: >
+      {
+        "exec-opts": ["native.cgroupdriver=systemd"],
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "100m"
+        },
+        "storage-driver": "overlay2"
+      }
+    state: present   
+    create: yes
+
+- name: Create the directory for the docker service
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: '0755'
+
+- name: Restart containerd to reload the new configuration
+  systemd:
+    state: restarted
+    name: docker

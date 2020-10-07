@@ -1,0 +1,33 @@
+---
+# ansible-galaxy collection install community.general
+
+# TODO: keep updated both the string and the when
+- name: Check selected runtime
+  fail:
+    mgs: > 
+      Wrong runtime selected: {{ runtime }} is not avaliable.
+      Choose between: docker or containerd
+  when: (runtime != "docker") and (runtime != "containerd")
+
+# Check if an architecture has been selected, otherwise, abort
+- name: Stop the role if the arch is not supported
+  fail: 
+    msg: > 
+      The {{ ansible_facts['architecture'] }} architecture is not supported by this role
+  when: arch "not supported"
+
+- name: Rebooting the machine to free resources
+  reboot:
+
+- name: Installing docker as runtime 
+  include_tasks: install_docker.yml
+  when: runtime == "docker"
+
+- name: Installing containerd as runtime
+  include_tasks: install_containerd.yml
+  when: runtime == "containerd"
+
+# TODO: implement and test
+#- name: Installing cri-o as runtime
+#  include_tasks: install_crio.yml
+#  when: runtime == "crio"  

@@ -1,0 +1,8 @@
+---
+# vars file for rpi-install-container-runtime
+
+arch: > 
+  {% if ansible_facts['architecture'] == 'aarch641' or ansible_facts['architecture'] == 'arm641' %}arm64{% else %}
+    {% if ansible_facts['architecture'] == 'armhf1' %}armhf{% else  
+    %}not supported{% endif %}
+  {%endif%}
