@@ -8,9 +8,9 @@ Requirements
 
 In order to use this role you need to install the community.general.modprobe plugin
 You need root privileges to run this script.
-''' YAML
-become: yes
-'''
+
+    become: yes
+
 
 Role Variables
 --------------
