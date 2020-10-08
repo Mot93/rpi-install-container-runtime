@@ -2,7 +2,7 @@
 # ansible-galaxy collection install community.general
 
 # TODO: keep updated both the string and the when
-- name: Check selected runtime
+- name: Stop the role if the selected runtime is not supported
   fail:
     mgs: > 
       Wrong runtime selected: {{ runtime }} is not avaliable.
@@ -14,7 +14,7 @@
   fail: 
     msg: > 
       The {{ ansible_facts['architecture'] }} architecture is not supported by this role
-  when: arch "not supported"
+  when: arch == "not supported"
 
 - name: Rebooting the machine to free resources
   reboot:
